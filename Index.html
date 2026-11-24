@@ -1,0 +1,1699 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tech &amp; SST Quiz: Feira das Profissões</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* =========================================================================
+       DESIGN TOKENS & CUSTOM STYLING (AZUL, PRETO E BRANCO)
+       ========================================================================= */
+    :root {
+      --bg-black: #070b12;
+      --bg-dark-elevated: #0e1624;
+      --card-white: #ffffff;
+      --card-soft: #f4f8ff;
+      --ink-dark: #0b1320;
+      --ink-muted: #4b5d78;
+      --ink-light: #f8fafc;
+      --blue-electric: #0ea5e9;
+      --blue-royal: #0284c7;
+      --blue-deep: #0369a1;
+      --blue-glow: rgba(14, 165, 233, 0.28);
+      --border-subtle: #dbeafe;
+      --success-bg: #ecfdf5;
+      --success-border: #10b981;
+      --success-text: #065f46;
+      --error-bg: #fef2f2;
+      --error-border: #ef4444;
+      --error-text: #991b1b;
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      min-height: 100%;
+      font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: var(--bg-black);
+      color: var(--ink-light);
+      overflow-x: hidden;
+    }
+
+    /* Fundo técnico sutil em preto profundo com brilho azul elétrico */
+    .tech-backdrop {
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 12% 10%, rgba(14, 165, 233, 0.18), transparent 42%),
+        radial-gradient(circle at 88% 85%, rgba(2, 132, 199, 0.16), transparent 45%),
+        linear-gradient(180deg, #05080f 0%, #0b1220 55%, #060911 100%);
+      position: relative;
+    }
+
+    .grid-overlay {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background-image:
+        linear-gradient(to right, rgba(14, 165, 233, 0.04) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(14, 165, 233, 0.04) 1px, transparent 1px);
+      background-size: 32px 32px;
+      z-index: 0;
+    }
+
+    .app-shell {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 1rem 1rem 2.5rem;
+    }
+
+    @media (min-width: 640px) {
+      .app-shell {
+        padding: 2rem 1.5rem 3rem;
+      }
+    }
+
+    /* Superfícies em branco limpo para alto contraste no celular */
+    .surface-white {
+      background-color: var(--card-white);
+      color: var(--ink-dark);
+      border-radius: 1.25rem;
+      box-shadow:
+        0 20px 50px rgba(0, 0, 0, 0.55),
+        0 0 0 1px rgba(14, 165, 233, 0.22);
+    }
+
+    .surface-dark {
+      background-color: rgba(14, 22, 36, 0.88);
+      border: 1px solid rgba(56, 189, 248, 0.22);
+      border-radius: 1rem;
+      backdrop-filter: blur(8px);
+    }
+
+    /* Botão principal azul elétrico */
+    .btn-primary-blue {
+      background: linear-gradient(135deg, #0284c7 0%, #0ea5e9 100%);
+      color: #ffffff;
+      font-weight: 700;
+      border-radius: 0.95rem;
+      box-shadow: 0 10px 24px -4px rgba(14, 165, 233, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+      transition: transform 0.16s ease, box-shadow 0.16s ease, filter 0.16s ease;
+    }
+
+    .btn-primary-blue:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 14px 28px -4px rgba(14, 165, 233, 0.58), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+      filter: brightness(1.04);
+    }
+
+    .btn-primary-blue:active:not(:disabled) {
+      transform: translateY(0);
+    }
+
+    .btn-primary-blue:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    /* Botão secundário azul/branco */
+    .btn-outline-blue {
+      background-color: #ffffff;
+      color: #0369a1;
+      border: 2px solid #0ea5e9;
+      font-weight: 700;
+      border-radius: 0.9rem;
+      transition: background-color 0.15s ease, color 0.15s ease, transform 0.15s ease;
+    }
+
+    .btn-outline-blue:hover {
+      background-color: #f0f9ff;
+      transform: translateY(-1px);
+    }
+
+    /* Alternativas interativas */
+    .option-btn {
+      width: 100%;
+      text-align: left;
+      background-color: #ffffff;
+      color: var(--ink-dark);
+      border: 2px solid #cbd5e1;
+      border-radius: 0.95rem;
+      padding: 0.95rem 1rem;
+      display: flex;
+      align-items: flex-start;
+      gap: 0.85rem;
+      transition: border-color 0.16s ease, background-color 0.16s ease, transform 0.14s ease, box-shadow 0.16s ease;
+      cursor: pointer;
+      min-height: 58px;
+    }
+
+    @media (min-width: 640px) {
+      .option-btn {
+        padding: 1rem 1.15rem;
+      }
+    }
+
+    .option-btn:hover:not(:disabled) {
+      border-color: var(--blue-electric);
+      background-color: #f0f9ff;
+      transform: translateX(3px);
+      box-shadow: 0 4px 14px rgba(14, 165, 233, 0.14);
+    }
+
+    .option-btn:disabled {
+      cursor: default;
+    }
+
+    .option-letter {
+      flex-shrink: 0;
+      width: 2rem;
+      height: 2rem;
+      border-radius: 0.6rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 0.875rem;
+      background-color: #e0f2fe;
+      color: #0369a1;
+      border: 1px solid #bae6fd;
+      margin-top: 0.05rem;
+      transition: all 0.16s ease;
+    }
+
+    /* Estados pós-resposta */
+    .option-btn.state-correct {
+      background-color: var(--success-bg);
+      border-color: var(--success-border);
+      color: var(--success-text);
+      box-shadow: 0 6px 18px rgba(16, 185, 129, 0.18);
+    }
+
+    .option-btn.state-correct .option-letter {
+      background-color: #059669;
+      border-color: #059669;
+      color: #ffffff;
+    }
+
+    .option-btn.state-wrong {
+      background-color: var(--error-bg);
+      border-color: var(--error-border);
+      color: var(--error-text);
+      box-shadow: 0 6px 18px rgba(239, 68, 68, 0.16);
+    }
+
+    .option-btn.state-wrong .option-letter {
+      background-color: #dc2626;
+      border-color: #dc2626;
+      color: #ffffff;
+    }
+
+    .option-btn.state-dimmed {
+      opacity: 0.55;
+      background-color: #f8fafc;
+      border-color: #e2e8f0;
+    }
+
+    /* Barra de progresso azul */
+    .progress-track {
+      width: 100%;
+      height: 10px;
+      background-color: rgba(255, 255, 255, 0.12);
+      border-radius: 9999px;
+      overflow: hidden;
+      border: 1px solid rgba(56, 189, 248, 0.25);
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #0284c7 0%, #38bdf8 100%);
+      border-radius: 9999px;
+      transition: width 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    /* Animações suaves */
+    @keyframes fadeSlideUp {
+      from {
+        opacity: 0;
+        transform: translateY(12px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .animate-enter {
+      animation: fadeSlideUp 0.28s ease-out forwards;
+    }
+
+    /* Barra de rolagem sutil para revisão */
+    .custom-scroll::-webkit-scrollbar {
+      width: 8px;
+    }
+    .custom-scroll::-webkit-scrollbar-track {
+      background: #0f172a;
+      border-radius: 999px;
+    }
+    .custom-scroll::-webkit-scrollbar-thumb {
+      background: #0284c7;
+      border-radius: 999px;
+    }
+
+    /* Cartões de escolha de perfil no início */
+    .profile-choice-btn {
+      width: 100%;
+      text-align: left;
+      padding: 0.85rem 1rem;
+      border-radius: 0.9rem;
+      border: 2px solid #cbd5e1;
+      background-color: #ffffff;
+      color: #0b1320;
+      transition: all 0.16s ease;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .profile-choice-btn:hover {
+      border-color: #0ea5e9;
+      background-color: #f0f9ff;
+    }
+
+    .profile-choice-btn[aria-pressed="true"] {
+      border-color: #0284c7;
+      background-color: #e0f2fe;
+      box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.2);
+    }
+  </style>
+</head>
+<body>
+  <div class="tech-backdrop">
+    <div class="grid-overlay" aria-hidden="true"></div>
+
+    <main class="app-shell">
+      <!-- Cabeçalho superior compacto da Feira das Profissões -->
+      <header class="flex flex-wrap items-center justify-between gap-2 mb-4 sm:mb-6 px-1">
+        <div class="flex items-center gap-2.5">
+          <div class="w-9 h-9 rounded-xl bg-sky-500/15 border border-sky-400/40 flex items-center justify-center text-sky-400">
+            <!-- Ícone SVG de Escudo + Chip -->
+            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+              <path d="M9 12l2 2 4-4"></path>
+            </svg>
+          </div>
+          <div>
+            <span class="block text-xs font-bold uppercase tracking-wider text-sky-400">Feira das Profissões</span>
+            <span class="block text-sm font-semibold text-white">TST + Tecnologia da Informação</span>
+          </div>
+        </div>
+
+        <button
+          id="topRestartBtn"
+          type="button"
+          onclick="confirmOrRestartFromTop()"
+          class="hidden items-center gap-1.5 text-xs sm:text-sm font-semibold text-sky-300 hover:text-white bg-sky-500/10 hover:bg-sky-500/20 border border-sky-400/30 px-3 py-1.5 rounded-lg transition cursor-pointer"
+          title="Voltar ao início"
+        >
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+            <path d="M3 3v5h5"></path>
+          </svg>
+          Início
+        </button>
+      </header>
+
+      <!-- =====================================================================
+           TELA 1: INICIAL (AZUL, PRETO E BRANCO)
+           ===================================================================== -->
+      <section id="startScreen" class="animate-enter space-y-4">
+        <div class="surface-white p-6 sm:p-8">
+          <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-5 pb-5 border-b border-slate-200">
+            <div class="flex items-center gap-3.5">
+              <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-slate-950 p-1 shrink-0 shadow-md border-2 border-sky-500/50 overflow-hidden flex items-center justify-center">
+                <img
+                  src="logo.png"
+                  alt="Logo da Escola Estadual Profª Ana Teles"
+                  class="w-full h-full object-cover rounded-full"
+                  onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+                />
+                <div class="hidden w-full h-full rounded-full bg-blue-700 text-white flex-col items-center justify-center text-center p-1 leading-none">
+                  <span class="text-[8px] font-extrabold uppercase tracking-tight">Escola Estadual</span>
+                  <svg class="w-6 h-6 my-0.5 text-sky-200" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                    <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+                    <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+                  </svg>
+                  <span class="text-[8px] font-extrabold">Profª Ana Teles</span>
+                </div>
+              </div>
+              <div>
+                <span class="block text-xs font-extrabold uppercase tracking-wider text-sky-700">
+                  Escola Estadual Profª Ana Teles
+                </span>
+                <span class="block text-xs sm:text-sm font-semibold text-slate-600">
+                  Curso Técnico em Segurança do Trabalho
+                </span>
+              </div>
+            </div>
+
+            <div class="inline-flex items-center self-start sm:self-center gap-2 px-3 py-1 rounded-full bg-sky-100 text-sky-800 text-xs font-bold uppercase tracking-wide border border-sky-200">
+              <span class="w-2 h-2 rounded-full bg-sky-500"></span>
+              Quiz Interativo • 15 Perguntas
+            </div>
+          </div>
+
+          <h1 class="text-2xl sm:text-4xl font-extrabold tracking-tight text-slate-950 leading-tight">
+            Tech &amp; SST Quiz: <span class="text-sky-600">Feira das Profissões</span>
+          </h1>
+
+          <p class="mt-4 text-base sm:text-lg text-slate-700 leading-relaxed">
+            Descubra como a <strong>Tecnologia da Informação (TI)</strong> e a <strong>Segurança do Trabalho (SST)</strong> trabalham juntas para proteger vidas, organizar dados críticos e prevenir acidentes nas empresas modernas.
+          </p>
+
+          <!-- Formulário obrigatório de identificação do participante -->
+          <form id="participantForm" onsubmit="handleStartSubmit(event)" class="mt-6 p-4 sm:p-5 rounded-2xl bg-slate-50 border border-sky-200 space-y-4" novalidate>
+            <div>
+              <label for="participantNameInput" class="block text-sm font-bold text-slate-900 mb-1.5">
+                Seu nome ou apelido <span class="text-rose-600">*</span>
+              </label>
+              <input
+                id="participantNameInput"
+                name="participantName"
+                type="text"
+                maxlength="80"
+                placeholder="Ex.: Ana Paula / Juninho"
+                required
+                class="w-full px-4 py-3 rounded-xl bg-white text-slate-950 placeholder-slate-400 border-2 border-slate-300 focus:border-sky-500 focus:outline-none text-sm sm:text-base font-medium transition"
+              />
+            </div>
+
+            <div>
+              <span class="block text-sm font-bold text-slate-900 mb-2">
+                Qual é o seu perfil no evento? <span class="text-rose-600">*</span>
+              </span>
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5" role="group" aria-label="Perfil do participante">
+                <button
+                  type="button"
+                  id="profileStudentBtn"
+                  aria-pressed="false"
+                  onclick="selectParticipantProfile('Aluno da Escola Estadual Professora Ana Teles')"
+                  class="profile-choice-btn"
+                >
+                  <span class="w-4 h-4 rounded-full border-2 border-sky-600 flex items-center justify-center shrink-0">
+                    <span id="dotStudent" class="w-2 h-2 rounded-full bg-sky-600 hidden"></span>
+                  </span>
+                  <span class="text-xs sm:text-sm font-bold leading-tight">
+                    Aluno da Escola Profª Ana Teles
+                  </span>
+                </button>
+
+                <button
+                  type="button"
+                  id="profileTeacherBtn"
+                  aria-pressed="false"
+                  onclick="selectParticipantProfile('Professor')"
+                  class="profile-choice-btn"
+                >
+                  <span class="w-4 h-4 rounded-full border-2 border-sky-600 flex items-center justify-center shrink-0">
+                    <span id="dotTeacher" class="w-2 h-2 rounded-full bg-sky-600 hidden"></span>
+                  </span>
+                  <span class="text-xs sm:text-sm font-bold leading-tight">
+                    Professor
+                  </span>
+                </button>
+
+                <button
+                  type="button"
+                  id="profileVisitorBtn"
+                  aria-pressed="false"
+                  onclick="selectParticipantProfile('Visitante')"
+                  class="profile-choice-btn"
+                >
+                  <span class="w-4 h-4 rounded-full border-2 border-sky-600 flex items-center justify-center shrink-0">
+                    <span id="dotVisitor" class="w-2 h-2 rounded-full bg-sky-600 hidden"></span>
+                  </span>
+                  <span class="text-xs sm:text-sm font-bold leading-tight">
+                    Visitante
+                  </span>
+                </button>
+              </div>
+              <input type="hidden" id="participantProfileInput" value="" />
+            </div>
+
+            <p id="formValidationMsg" class="hidden text-xs sm:text-sm font-semibold text-rose-700 bg-rose-50 border border-rose-200 px-3.5 py-2.5 rounded-xl">
+              Por favor, informe seu nome ou apelido e escolha seu perfil (Aluno, Professor ou Visitante).
+            </p>
+
+            <button
+              id="startGameBtn"
+              type="submit"
+              class="btn-primary-blue w-full py-4 px-6 text-base sm:text-lg flex items-center justify-center gap-2.5 cursor-pointer"
+            >
+              <span>Começar Jogo</span>
+              <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <polygon points="5 3 19 12 5 21 5 3"></polygon>
+              </svg>
+            </button>
+          </form>
+
+          <!-- Cartões de conexão TI + SST em superfície clara -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5 mt-6">
+            <div class="p-4 rounded-xl bg-slate-950 text-white border border-sky-500/30">
+              <div class="flex items-center gap-2 text-sky-400 font-bold text-sm mb-1.5">
+                <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <rect x="2" y="3" width="20" height="14" rx="2"></rect>
+                  <line x1="8" y1="21" x2="16" y2="21"></line>
+                  <line x1="12" y1="17" x2="12" y2="21"></line>
+                </svg>
+                Tecnologia da Informação
+              </div>
+              <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                Hardware, atalhos do Windows, backup na nuvem, proteção contra <em>phishing</em> e <em>ransomware</em>, LGPD e arquivos em PDF.
+              </p>
+            </div>
+
+            <div class="p-4 rounded-xl bg-sky-50 text-slate-900 border border-sky-200">
+              <div class="flex items-center gap-2 text-sky-800 font-bold text-sm mb-1.5">
+                <svg class="w-4 h-4 shrink-0 text-sky-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                </svg>
+                Segurança do Trabalho
+              </div>
+              <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">
+                EPI, EPC, CA, CAT, PGR, ASO, DDS, CIPA, eSocial e prevenção de riscos no dia a dia profissional.
+              </p>
+            </div>
+          </div>
+
+          <!-- Regras rápidas -->
+          <div class="mt-6 pt-5 border-t border-slate-200 flex flex-wrap items-center justify-between gap-3 text-xs sm:text-sm text-slate-600">
+            <span class="flex items-center gap-1.5 font-medium">
+              <strong class="text-sky-700">✓</strong> Correção imediata + explicação
+            </span>
+            <span class="flex items-center gap-1.5 font-medium">
+              <strong class="text-sky-700">✓</strong> Nota final de 0,0 a 10,0
+            </span>
+            <span class="flex items-center gap-1.5 font-medium">
+              <strong class="text-sky-700">✓</strong> Otimizado para celular
+            </span>
+          </div>
+        </div>
+
+        <!-- Rodapé discreto com acesso da equipe do estande aos registros -->
+        <div class="flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-slate-400 px-2">
+          <span>Curso Técnico em Segurança do Trabalho • Estande Interativo TI &amp; SST</span>
+          <button
+            type="button"
+            onclick="openStaffModal()"
+            class="text-slate-400 hover:text-sky-300 underline underline-offset-4 transition cursor-pointer"
+          >
+            Registros / Resultados (Equipe)
+          </button>
+        </div>
+
+        <!-- Painel / Modal discreto para a equipe do estande -->
+        <div id="staffModal" class="hidden surface-dark p-5 sm:p-6 space-y-4">
+          <div class="flex items-center justify-between gap-2 border-b border-slate-800 pb-3">
+            <div>
+              <h2 class="text-base sm:text-lg font-extrabold text-white">Painel da Equipe • Registros do Quiz</h2>
+              <p class="text-xs text-slate-400">Armazenamento local neste navegador (`localStorage`).</p>
+            </div>
+            <button
+              type="button"
+              onclick="closeStaffModal()"
+              class="text-xs font-bold text-slate-300 hover:text-white bg-slate-800 px-3 py-1.5 rounded-lg cursor-pointer"
+            >
+              Fechar
+            </button>
+          </div>
+
+          <div id="staffPinGate" class="space-y-3">
+            <label for="staffPinInput" class="block text-xs sm:text-sm font-semibold text-sky-200">
+              PIN de acesso da equipecode:
+            </label>
+            <div class="flex flex-col sm:flex-row gap-2.5">
+              <input
+                id="staffPinInput"
+                type="password"
+                inputmode="numeric"
+                placeholder="Digite o PIN"
+                onkeydown="if(event.key==='Enter') unlockStaffPanel()"
+                class="flex-1 px-3.5 py-2.5 rounded-xl bg-slate-950 text-white border border-slate-700 focus:border-sky-400 focus:outline-none text-sm"
+              />
+              <button
+                type="button"
+                onclick="unlockStaffPanel()"
+                class="btn-primary-blue px-5 py-2.5 text-sm cursor-pointer"
+              >
+                Acessar Registros
+              </button>
+            </div>
+            <p id="staffPinError" class="hidden text-xs font-semibold text-rose-400">PIN incorreto. Tente novamente.</p>
+          </div>
+
+          <div id="staffRecordsContent" class="hidden space-y-4">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <span class="text-xs sm:text-sm font-bold text-sky-300">
+                Total de participações salvas: <span id="recordsTotalCount" class="text-white">0</span>
+              </span>
+              <div class="flex flex-wrap gap-2">
+                <button
+                  type="button"
+                  onclick="exportRecordsToCsv()"
+                  class="px-3.5 py-2 rounded-lg bg-sky-600 hover:bg-sky-500 text-white text-xs font-bold transition cursor-pointer"
+                >
+                  Exportar CSV (Excel/Sheets)
+                </button>
+                <button
+                  type="button"
+                  onclick="handleClearRecords()"
+                  class="px-3.5 py-2 rounded-lg bg-rose-950 hover:bg-rose-900 text-rose-200 border border-rose-500/40 text-xs font-bold transition cursor-pointer"
+                >
+                  Limpar Registros
+                </button>
+              </div>
+            </div>
+
+            <div id="clearConfirmBar" class="hidden p-3 rounded-xl bg-rose-950/90 border border-rose-500/50 flex flex-wrap items-center justify-between gap-2 text-xs text-rose-100">
+              <span>Tem certeza que deseja apagar todos os registros salvos neste dispositivo?</span>
+              <div class="flex gap-2">
+                <button
+                  type="button"
+                  onclick="confirmClearRecords()"
+                  class="px-3 py-1 rounded-md bg-rose-600 hover:bg-rose-500 text-white font-bold cursor-pointer"
+                >
+                  Sim, apagar
+                </button>
+                <button
+                  type="button"
+                  onclick="cancelClearRecords()"
+                  class="px-3 py-1 rounded-md bg-slate-800 text-slate-200 font-semibold cursor-pointer"
+                >
+                  Cancelar
+                </button>
+              </div>
+            </div>
+
+            <div class="overflow-x-auto max-h-72 overflow-y-auto custom-scroll rounded-xl border border-slate-800">
+              <table class="w-full text-left border-collapse text-xs sm:text-sm">
+                <thead class="bg-slate-950 text-sky-300 sticky top-0">
+                  <tr>
+                    <th class="py-2.5 px-3 font-bold">Nome / Apelido</th>
+                    <th class="py-2.5 px-3 font-bold">Perfil</th>
+                    <th class="py-2.5 px-3 font-bold">Nota</th>
+                    <th class="py-2.5 px-3 font-bold">Acertos</th>
+                    <th class="py-2.5 px-3 font-bold">Data/Hora</th>
+                  </tr>
+                </thead>
+                <tbody id="recordsTableBody" class="divide-y divide-slate-800/80 text-slate-200 bg-slate-900/70">
+                  <!-- Preenchido via JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- =====================================================================
+           TELA 2: QUIZ (15 PERGUNTAS)
+           ===================================================================== -->
+      <section id="quizScreen" class="hidden space-y-4">
+        <!-- Barra superior de progresso e pontuação parcial -->
+        <div class="surface-dark p-4">
+          <div class="flex flex-wrap items-center justify-between gap-2 mb-2.5">
+            <div class="flex items-center gap-2">
+              <span id="questionCounter" class="text-sm sm:text-base font-extrabold text-white">
+                Pergunta 1 de 15
+              </span>
+              <span id="topicBadge" class="hidden sm:inline-block text-xs font-semibold px-2.5 py-0.5 rounded-full bg-sky-500/20 text-sky-300 border border-sky-400/30">
+                TI + SST
+              </span>
+            </div>
+            <div class="flex items-center gap-3 text-xs sm:text-sm font-bold text-sky-300">
+              <span id="activePlayerTag" class="hidden md:inline-block text-slate-300 truncate max-w-[180px]"></span>
+              <span>Acertos: <span id="liveScoreText" class="text-white">0</span> / 15</span>
+            </div>
+          </div>
+
+          <div class="progress-track" role="progressbar" aria-valuemin="1" aria-valuemax="15" aria-valuenow="1" id="progressBarContainer">
+            <div id="progressBarFill" class="progress-fill" style="width: 6.66%;"></div>
+          </div>
+        </div>
+
+        <!-- Cartão branco da pergunta -->
+        <div id="questionCard" class="surface-white p-5 sm:p-7 animate-enter">
+          <div class="flex items-center justify-between gap-2 mb-3">
+            <span id="mobileTopicBadge" class="sm:hidden text-xs font-bold px-2.5 py-0.5 rounded-full bg-sky-100 text-sky-800 border border-sky-200">
+              TI + SST
+            </span>
+            <span id="questionNumberPill" class="ml-auto text-xs font-bold uppercase tracking-wider text-sky-700 bg-sky-50 px-2.5 py-1 rounded-md border border-sky-200">
+              Questão #01
+            </span>
+          </div>
+
+          <h2 id="questionText" class="text-lg sm:text-2xl font-bold text-slate-950 leading-snug mb-5">
+            Carregando pergunta...
+          </h2>
+
+          <!-- Alternativas A, B, C, D -->
+          <div id="optionsContainer" class="space-y-3">
+            <!-- Preenchido via JavaScript -->
+          </div>
+
+          <!-- Feedback automático imediato + explicação -->
+          <div id="feedbackBox" class="hidden mt-5 p-4 sm:p-5 rounded-xl border-2 transition-all">
+            <div class="flex items-start gap-3">
+              <div id="feedbackIcon" class="shrink-0 mt-0.5"></div>
+              <div class="flex-1 min-w-0">
+                <p id="feedbackTitle" class="font-extrabold text-base sm:text-lg leading-snug"></p>
+                <p id="feedbackExplanation" class="mt-1.5 text-sm sm:text-base leading-relaxed"></p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Botão avançar / finalizar -->
+          <div class="mt-6 flex justify-end">
+            <button
+              id="nextQuestionBtn"
+              type="button"
+              onclick="handleNextQuestion()"
+              disabled
+              class="btn-primary-blue w-full sm:w-auto py-3.5 px-6 text-sm sm:text-base flex items-center justify-center gap-2 cursor-pointer"
+            >
+              <span id="nextBtnLabel">Próxima Pergunta</span>
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- =====================================================================
+           TELA 3: RESULTADO FINAL (PONTUAÇÃO DE 0 A 10 + REVISÃO)
+           ===================================================================== -->
+      <section id="resultScreen" class="hidden space-y-5 animate-enter">
+        <div class="surface-white p-6 sm:p-8">
+          <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6 pb-6 border-b border-slate-200">
+            <div class="flex flex-col sm:flex-row items-start gap-4">
+              <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-slate-950 p-1 shrink-0 shadow-md border-2 border-sky-500/50 overflow-hidden flex items-center justify-center">
+                <img
+                  src="Picsart_26-11-11_22-23-04-640.jpg"
+                  alt="Logo da Escola Estadual Profª Ana Teles"
+                  class="w-full h-full object-cover rounded-full"
+                  onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+                />
+                <div class="hidden w-full h-full rounded-full bg-blue-700 text-white flex-col items-center justify-center text-center p-1 leading-none">
+                  <span class="text-[8px] font-extrabold uppercase tracking-tight">Escola Estadual</span>
+                  <svg class="w-6 h-6 my-0.5 text-sky-200" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                    <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+                    <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+                  </svg>
+                  <span class="text-[8px] font-extrabold">Profª Ana Teles</span>
+                </div>
+              </div>
+
+              <div>
+                <div class="flex flex-wrap items-center gap-2 mb-3">
+                  <span class="inline-block text-xs font-extrabold uppercase tracking-wider px-3 py-1 rounded-full bg-sky-100 text-sky-800 border border-sky-200">
+                    Resultado Final do Quiz
+                  </span>
+                  <span id="resultParticipantBadge" class="inline-block text-xs font-bold px-3 py-1 rounded-full bg-slate-900 text-sky-300">
+                    Participante
+                  </span>
+                </div>
+                <h2 id="congratsTitle" class="text-2xl sm:text-3xl font-extrabold text-slate-950 leading-tight">
+                  Parabéns!
+                </h2>
+                <p id="congratsMessage" class="mt-2 text-sm sm:text-base text-slate-700 leading-relaxed">
+                  Mensagem personalizada de desempenho.
+                </p>
+                <p id="storageConfirmationText" class="mt-3 text-xs sm:text-sm font-semibold text-emerald-800 bg-emerald-50 border border-emerald-200 px-3.5 py-2 rounded-xl inline-block">
+                  ✓ Resultado registrado com sucesso neste dispositivo.
+                </p>
+              </div>
+            </div>
+
+            <!-- Placar em destaque de 0 a 10 -->
+            <div class="shrink-0 bg-slate-950 text-white rounded-2xl p-5 text-center border-2 border-sky-400 shadow-lg min-w-[155px]">
+              <span class="block text-xs font-bold uppercase tracking-widest text-sky-400">Nota Final</span>
+              <div id="finalGradeText" class="text-4xl sm:text-5xl font-extrabold text-white mt-1">
+                0.0<span class="text-lg font-semibold text-sky-300">/10</span>
+              </div>
+              <span id="finalHitsText" class="block text-xs sm:text-sm font-medium text-slate-300 mt-1.5">
+                0 de 15 acertos
+              </span>
+            </div>
+          </div>
+
+          <!-- Resumo rápido de acertos e erros -->
+          <div class="grid grid-cols-3 gap-2.5 sm:gap-4 my-6 text-center">
+            <div class="p-3 rounded-xl bg-emerald-50 border border-emerald-200">
+              <span id="summaryCorrectCount" class="block text-xl sm:text-2xl font-extrabold text-emerald-700">0</span>
+              <span class="text-xs font-semibold text-emerald-800">Corretas</span>
+            </div>
+            <div class="p-3 rounded-xl bg-rose-50 border border-rose-200">
+              <span id="summaryWrongCount" class="block text-xl sm:text-2xl font-extrabold text-rose-700">0</span>
+              <span class="text-xs font-semibold text-rose-800">Incorretas</span>
+            </div>
+            <div class="p-3 rounded-xl bg-sky-50 border border-sky-200">
+              <span id="summaryPercentCount" class="block text-xl sm:text-2xl font-extrabold text-sky-800">0%</span>
+              <span class="text-xs font-semibold text-sky-900">Aproveitamento</span>
+            </div>
+          </div>
+
+          <!-- Ações principais -->
+          <div class="flex flex-col sm:flex-row gap-3">
+            <button
+              type="button"
+              onclick="prepareNextParticipant()"
+              class="btn-primary-blue flex-1 py-3.5 px-6 text-base flex items-center justify-center gap-2 cursor-pointer"
+            >
+              <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+                <path d="M3 3v5h5"></path>
+              </svg>
+              <span>Jogar Novamente</span>
+            </button>
+
+            <button
+              type="button"
+              onclick="toggleReviewSection()"
+              id="toggleReviewBtn"
+              class="btn-outline-blue py-3.5 px-5 text-sm sm:text-base flex items-center justify-center gap-2 cursor-pointer"
+            >
+              <span id="toggleReviewLabel">Ver Gabarito e Explicações</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Gabarito detalhado com explicações de todas as 15 questões -->
+        <div id="reviewSection" class="surface-dark p-5 sm:p-6">
+          <div class="flex items-center justify-between gap-2 mb-4">
+            <h3 class="text-lg sm:text-xl font-extrabold text-white">
+              Resumo das 15 Perguntas e Explicações
+            </h3>
+            <span class="text-xs font-semibold text-sky-300 bg-sky-500/15 px-2.5 py-1 rounded-full border border-sky-400/30">
+              Gabarito Comentado
+            </span>
+          </div>
+
+          <div id="reviewList" class="space-y-3.5 max-h-[540px] overflow-y-auto pr-1 custom-scroll">
+            <!-- Renderizado via JavaScript -->
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    /* =========================================================================
+       CONFIGURAÇÃO E ESTADO DO JOGO
+       ========================================================================= */
+    // Opcional: cole aqui a URL de um Webhook ou Google Apps Script se quiser envio remoto extra.
+    // O jogo funciona 100% sem isso usando localStorage + exportação CSV para Excel/Sheets.
+    const OPTIONAL_WEBHOOK_URL = "";
+    const STAFF_ACCESS_PIN = "2026";
+    const STORAGE_KEY = "tech_sst_quiz_feira_ana_teles_v1";
+
+    let participantData = {
+      name: "",
+      profile: ""
+    };
+    let currentQuestionIndex = 0;
+    let scoreHits = 0;
+    let answeredCurrent = false;
+    let userAnswers = []; // Armazena { questionId, selectedIndex, isCorrect }
+    let staffUnlocked = false;
+
+    /* =========================================================================
+       BANCO DE 15 PERGUNTAS (TI + SEGURANÇA DO TRABALHO)
+       ========================================================================= */
+    const QUIZ_QUESTIONS = [
+      {
+        id: 1,
+        topic: "Hardware & SST",
+        question: "No escritório do SESMT, qual peça do computador funciona como uma 'mesa de trabalho', permitindo manter vários arquivos pesados abertos ao mesmo tempo (como normas em PDF, planilhas e laudos) sem travar?",
+        options: [
+          "Memória RAM",
+          "Leitor Biométrico",
+          "Projetor Multimídia",
+          "Cabo HDMI"
+        ],
+        correctIndex: 0,
+        explanation: "A Memória RAM armazena temporariamente os programas e documentos abertos no momento. Quanto maior a memória RAM, mais tarefas simultâneas o computador executa sem travamentos."
+      },
+      {
+        id: 2,
+        topic: "EPI & EPC",
+        question: "Qual é a principal diferença entre EPI e EPC na prevenção de acidentes?",
+        options: [
+          "EPI é obrigatório apenas na TI; EPC serve apenas para incêndios",
+          "EPI protege o trabalhador individualmente; EPC protege o ambiente e vários trabalhadores ao mesmo tempo",
+          "EPC é um documento do governo; EPI é um sistema operacional",
+          "Não há diferença, ambos significam a mesma coisa"
+        ],
+        correctIndex: 1,
+        explanation: "O EPI (Equipamento de Proteção Individual, como óculos e luvas) protege uma pessoa, enquanto o EPC (Equipamento de Proteção Coletiva, como guarda-corpo, exaustores e sinalização) protege o coletivo."
+      },
+      {
+        id: 3,
+        topic: "Segurança Digital (Phishing)",
+        question: "Você recebe um e-mail urgente dizendo ser do eSocial ou do Ministério do Trabalho, pedindo para clicar em um link ou baixar um arquivo '.exe' para evitar multa imediata. O que isso representa?",
+        options: [
+          "Uma atualização oficial obrigatória do Windows",
+          "Um backup automático na nuvem",
+          "Uma tentativa de golpe virtual conhecida como Phishing",
+          "Uma melhoria de desempenho do processador"
+        ],
+        correctIndex: 2,
+        explanation: "Phishing é o golpe em que criminosos criam mensagens falsas com senso de urgência ou medo para roubar senhas ou instalar vírus. Órgãos oficiais não enviam notificações de multa em arquivos executáveis (.exe) por e-mail."
+      },
+      {
+        id: 4,
+        topic: "Atalhos do Windows",
+        question: "O editor de texto trava bem na hora de finalizar um relatório importante, mas outros programas continuam abertos. Qual atalho do Windows abre o Gerenciador de Tarefas para encerrar apenas o programa travado?",
+        options: [
+          "Ctrl + Shift + Esc",
+          "Alt + F4 + Espaço",
+          "Ctrl + Z + Enter",
+          "Win + L + Tab"
+        ],
+        correctIndex: 0,
+        explanation: "O atalho Ctrl + Shift + Esc abre diretamente o Gerenciador de Tarefas, permitindo finalizar apenas o aplicativo que travou sem desligar o computador à força e perder outros trabalhos."
+      },
+      {
+        id: 5,
+        topic: "Documentação Legal (CAT & CA)",
+        question: "Na Segurança do Trabalho, o que significam respectivamente as siglas CAT e CA?",
+        options: [
+          "Controle de Acesso e Certificado de Ambiente",
+          "Comunicação de Acidente de Trabalho e Certificado de Aprovação",
+          "Cadastro Anual de Treinamentos e Cartão de Assinatura",
+          "Comissão de Acidentes no Trabalho e Código de Alerta"
+        ],
+        correctIndex: 1,
+        explanation: "A CAT registra acidentes de trabalho ou doenças ocupacionais (inclusive via eSocial), e o CA atesta que o EPI foi testado e aprovado para uso seguro."
+      },
+      {
+        id: 6,
+        topic: "Formatos de Arquivo (PDF vs Editável)",
+        question: "Após coletar assinaturas em uma lista de presença de treinamento ou finalizar um laudo assinado, por que é recomendado salvar ou exportar em PDF antes de arquivar ou enviar?",
+        options: [
+          "Porque o PDF só abre em celulares antigos",
+          "Porque o PDF apaga automaticamente os textos antigos",
+          "Porque o PDF 'congela' a formatação e dificulta alterações indevidas no conteúdo",
+          "Porque arquivos editáveis não podem ser guardados em pastas"
+        ],
+        correctIndex: 2,
+        explanation: "Salvar em PDF preserva o layout e a integridade do documento final, evitando alterações acidentais ou adulterações após a emissão de registros técnicos e listas de presença."
+      },
+      {
+        id: 7,
+        topic: "Backup & Nuvem",
+        question: "Se o disco rígido do computador do SESMT queimar durante uma queda de energia ou sofrer um ataque de Ransomware, o que salva o histórico de documentos da empresa?",
+        options: [
+          "Deixar tudo salvo apenas na Área de Trabalho daquele PC",
+          "Ter rotinas de Backup, como cópias sincronizadas na nuvem (Google Drive / OneDrive)",
+          "Desativar o antivírus e reiniciar o monitor",
+          "Renomear os arquivos para 'Final_Final'"
+        ],
+        correctIndex: 1,
+        explanation: "O backup em nuvem mantém cópias protegidas fora da máquina física. Se o computador falhar ou for sequestrado por um ransomware, os arquivos podem ser recuperados."
+      },
+      {
+        id: 8,
+        topic: "Gestão SST (PGR, ASO, DDS & CIPA)",
+        question: "Qual conjunto associa corretamente cada sigla à sua função na Segurança do Trabalho?",
+        options: [
+          "PGR: Gerenciamento de Riscos | ASO: Atestado de Saúde Ocupacional | DDS: Diálogo Diário de Segurança",
+          "PGR: Planilha de Gastos | ASO: Autorização de Saída de Obra | DDS: Disco de Segurança",
+          "CIPA: Controle de Impressoras | ASO: Avaliação de Software | DDS: Documento de Saúde",
+          "PGR: Programa de Gravação | CIPA: Central de Informática | ASO: Arquivo de Sistema Operacional"
+        ],
+        correctIndex: 0,
+        explanation: "O PGR mapeia e controla riscos ocupacionais; o ASO avalia a saúde do trabalhador; o DDS é uma conversa rápida de prevenção diária; e a CIPA atua na prevenção de acidentes e assédio."
+      },
+      {
+        id: 9,
+        topic: "LGPD & Sigilo de Dados",
+        question: "O SESMT manipula dados pessoais (CPF, RG) e informações de saúde (atestados e exames médicos) dos trabalhadores. Pela LGPD e pela ética profissional, qual é a conduta correta?",
+        options: [
+          "Publicar exames e atestados em pasta compartilhada aberta a todos",
+          "Garantir confidencialidade, acesso restrito a quem tem autorização e bloqueio de tela ao sair da mesa",
+          "Enviar dados médicos por grupos abertos sem critério",
+          "Guardar senhas anotadas em papel colado no monitor"
+        ],
+        correctIndex: 1,
+        explanation: "Dados de saúde e pessoais exigem sigilo e proteção contra vazamentos. Bloquear a tela (Win + L) ao se ausentar e restringir pastas sensíveis protege os trabalhadores e evita multas."
+      },
+      {
+        id: 10,
+        topic: "Produtividade & Atalhos",
+        question: "Durante uma apresentação ou inspeção na tela, qual atalho do Windows permite recortar apenas uma área específica da tela para colar como imagem em um relatório ou slide?",
+        options: [
+          "Win + Shift + S",
+          "Ctrl + P",
+          "Alt + Enter",
+          "Ctrl + Esc"
+        ],
+        correctIndex: 0,
+        explanation: "O atalho Win + Shift + S ativa a ferramenta de captura de tela do Windows, permitindo selecionar exatamente o trecho desejado para colar (Ctrl + V) onde você precisar."
+      },
+      {
+        id: 11,
+        topic: "Ransomware & Ameaças",
+        question: "O que caracteriza um ataque de Ransomware no computador de uma empresa?",
+        options: [
+          "Um programa que organiza pastas em ordem alfabética",
+          "Um vírus que 'sequestra' (criptografa) arquivos e exige resgate para liberar o acesso",
+          "Um recurso de acessibilidade que aumenta o tamanho da fonte",
+          "Um cabo usado para conectar impressoras"
+        ],
+        correctIndex: 1,
+        explanation: "Ransomware é um malware que bloqueia o acesso aos arquivos da vítima (geralmente criptografando-os) e pede pagamento de resgate. A prevenção envolve antivírus ativo, cautela com links/anexos e backup."
+      },
+      {
+        id: 12,
+        topic: "eSocial & SST",
+        question: "Como a Tecnologia da Informação apoia o cumprimento do eSocial na área de Segurança e Saúde do Trabalho?",
+        options: [
+          "Eliminando a necessidade de registrar acidentes ou exames",
+          "Integrando informações de SST (como CAT, monitoramento de saúde e condições ambientais) com agilidade e rastreabilidade",
+          "Substituindo o uso de equipamentos de proteção na fábrica",
+          "Permitindo apagar históricos de funcionários desligados no primeiro dia"
+        ],
+        correctIndex: 1,
+        explanation: "Softwares e rotinas digitais estruturadas ajudam a organizar e transmitir com precisão informações exigidas pelo eSocial, reduzindo falhas manuais e atrasos."
+      },
+      {
+        id: 13,
+        topic: "Organização de Arquivos",
+        question: "Ao nomear relatórios de inspeção ou documentos com data para facilitar a ordem cronológica no computador, qual padrão de data invertida funciona melhor na ordenação por nome?",
+        options: [
+          "AAAA-MM-DD (ex.: 2026-11-24_Inspecao_SetorA.pdf)",
+          "Relatorio_Final_AgoraSim.docx",
+          "Sem_Titulo_123.pdf",
+          "Apenas o dia da semana (ex.: Terca.pdf)"
+        ],
+        correctIndex: 0,
+        explanation: "O formato de data invertida AAAA-MM-DD coloca ano, mês e dia nessa sequência, fazendo com que a ordenação alfabética padrão do sistema organize os arquivos em ordem cronológica."
+      },
+      {
+        id: 14,
+        topic: "Prevenção & Ergonomia Digital",
+        question: "Por que o Técnico em Segurança também deve aplicar conceitos de ergonomia e boas práticas no próprio posto de trabalho com computador?",
+        options: [
+          "Porque ergonomia se aplica apenas a máquinas industriais pesadas",
+          "Para reduzir fadiga visual, desconforto postural e movimentos repetitivos desnecessários durante longas jornadas",
+          "Para dispensar o uso de pausas e ajustes de tela",
+          "Porque o computador não exige ajuste de altura ou iluminação"
+        ],
+        correctIndex: 1,
+        explanation: "O trabalho prolongado em telas e teclados exige postura adequada, boa iluminação/ajuste de tela e uso inteligente de atalhos para diminuir sobrecarga física e cansaço visual."
+      },
+      {
+        id: 15,
+        topic: "Integração TI + SST",
+        question: "Na Feira das Profissões, por que unir Tecnologia da Informação e Segurança do Trabalho é um grande diferencial para o futuro profissional?",
+        options: [
+          "Porque o profissional de SST não precisará mais visitar os setores da empresa",
+          "Porque a tecnologia agiliza inspeções, treinamentos (como DDS e SIPAT), controle de dados e prevenção de acidentes",
+          "Porque a informática substitui todas as Normas Regulamentadoras",
+          "Porque apenas quem trabalha com programação pode atuar em SST"
+        ],
+        correctIndex: 1,
+        explanation: "A junção de TI e SST torna a prevenção mais ágil, visual e baseada em dados confiáveis — desde check-lists digitais e apresentações de DDS até o controle seguro de informações."
+      }
+    ];
+
+    // Referências de elementos do DOM
+    const startScreen = document.getElementById("startScreen");
+    const quizScreen = document.getElementById("quizScreen");
+    const resultScreen = document.getElementById("resultScreen");
+    const topRestartBtn = document.getElementById("topRestartBtn");
+
+    const questionCounter = document.getElementById("questionCounter");
+    const topicBadge = document.getElementById("topicBadge");
+    const mobileTopicBadge = document.getElementById("mobileTopicBadge");
+    const questionNumberPill = document.getElementById("questionNumberPill");
+    const liveScoreText = document.getElementById("liveScoreText");
+    const progressBarContainer = document.getElementById("progressBarContainer");
+    const progressBarFill = document.getElementById("progressBarFill");
+
+    const questionCard = document.getElementById("questionCard");
+    const questionText = document.getElementById("questionText");
+    const optionsContainer = document.getElementById("optionsContainer");
+    const feedbackBox = document.getElementById("feedbackBox");
+    const feedbackIcon = document.getElementById("feedbackIcon");
+    const feedbackTitle = document.getElementById("feedbackTitle");
+    const feedbackExplanation = document.getElementById("feedbackExplanation");
+    const nextQuestionBtn = document.getElementById("nextQuestionBtn");
+    const nextBtnLabel = document.getElementById("nextBtnLabel");
+
+    const congratsTitle = document.getElementById("congratsTitle");
+    const congratsMessage = document.getElementById("congratsMessage");
+    const resultParticipantBadge = document.getElementById("resultParticipantBadge");
+    const storageConfirmationText = document.getElementById("storageConfirmationText");
+    const activePlayerTag = document.getElementById("activePlayerTag");
+    const participantNameInput = document.getElementById("participantNameInput");
+    const participantProfileInput = document.getElementById("participantProfileInput");
+    const profileStudentBtn = document.getElementById("profileStudentBtn");
+    const profileTeacherBtn = document.getElementById("profileTeacherBtn");
+    const profileVisitorBtn = document.getElementById("profileVisitorBtn");
+    const dotStudent = document.getElementById("dotStudent");
+    const dotTeacher = document.getElementById("dotTeacher");
+    const dotVisitor = document.getElementById("dotVisitor");
+    const formValidationMsg = document.getElementById("formValidationMsg");
+    const staffModal = document.getElementById("staffModal");
+    const staffPinGate = document.getElementById("staffPinGate");
+    const staffPinInput = document.getElementById("staffPinInput");
+    const staffPinError = document.getElementById("staffPinError");
+    const staffRecordsContent = document.getElementById("staffRecordsContent");
+    const recordsTotalCount = document.getElementById("recordsTotalCount");
+    const recordsTableBody = document.getElementById("recordsTableBody");
+    const clearConfirmBar = document.getElementById("clearConfirmBar");
+    const finalGradeText = document.getElementById("finalGradeText");
+    const finalHitsText = document.getElementById("finalHitsText");
+    const summaryCorrectCount = document.getElementById("summaryCorrectCount");
+    const summaryWrongCount = document.getElementById("summaryWrongCount");
+    const summaryPercentCount = document.getElementById("summaryPercentCount");
+    const reviewSection = document.getElementById("reviewSection");
+    const reviewList = document.getElementById("reviewList");
+    const toggleReviewLabel = document.getElementById("toggleReviewLabel");
+
+    const LETTERS = ["A", "B", "C", "D"];
+
+    /**
+     * Seleciona o perfil do participante na tela inicial.
+     * @param {string} profileValue
+     */
+    function selectParticipantProfile(profileValue) {
+      participantProfileInput.value = profileValue;
+      const isStudent = profileValue === "Aluno da Escola Estadual Professora Ana Teles";
+      const isTeacher = profileValue === "Professor";
+      const isVisitor = profileValue === "Visitante";
+
+      profileStudentBtn.setAttribute("aria-pressed", String(isStudent));
+      profileTeacherBtn.setAttribute("aria-pressed", String(isTeacher));
+      profileVisitorBtn.setAttribute("aria-pressed", String(isVisitor));
+
+      dotStudent.classList.toggle("hidden", !isStudent);
+      dotTeacher.classList.toggle("hidden", !isTeacher);
+      dotVisitor.classList.toggle("hidden", !isVisitor);
+      formValidationMsg.classList.add("hidden");
+    }
+
+    /**
+     * Valida os campos obrigatórios da tela inicial e inicia o jogo.
+     * @param {Event} event
+     */
+    function handleStartSubmit(event) {
+      event.preventDefault();
+      const nameValue = participantNameInput.value.trim();
+      const profileValue = participantProfileInput.value.trim();
+
+      if (!nameValue || !profileValue) {
+        formValidationMsg.classList.remove("hidden");
+        if (!nameValue) {
+          participantNameInput.focus();
+        }
+        return;
+      }
+
+      formValidationMsg.classList.add("hidden");
+      participantData = {
+        name: nameValue,
+        profile: profileValue
+      };
+      startGame();
+    }
+
+    /**
+     * Prepara a tela inicial para o próximo participante da feira.
+     */
+    function prepareNextParticipant() {
+      participantData = { name: "", profile: "" };
+      participantNameInput.value = "";
+      participantProfileInput.value = "";
+      profileStudentBtn.setAttribute("aria-pressed", "false");
+      profileTeacherBtn.setAttribute("aria-pressed", "false");
+      profileVisitorBtn.setAttribute("aria-pressed", "false");
+      dotStudent.classList.add("hidden");
+      dotTeacher.classList.add("hidden");
+      dotVisitor.classList.add("hidden");
+      formValidationMsg.classList.add("hidden");
+
+      quizScreen.classList.add("hidden");
+      resultScreen.classList.add("hidden");
+      startScreen.classList.remove("hidden");
+      topRestartBtn.classList.add("hidden");
+      topRestartBtn.classList.remove("inline-flex");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    /**
+     * Inicia o jogo do zero para o participante identificado.
+     */
+    function startGame() {
+      currentQuestionIndex = 0;
+      scoreHits = 0;
+      answeredCurrent = false;
+      userAnswers = [];
+
+      const shortProfileLabel = participantData.profile.startsWith("Aluno")
+        ? "Aluno Ana Teles"
+        : participantData.profile;
+
+      activePlayerTag.textContent = `${participantData.name} • ${shortProfileLabel}`;
+
+      startScreen.classList.add("hidden");
+      resultScreen.classList.add("hidden");
+      staffModal.classList.add("hidden");
+      quizScreen.classList.remove("hidden");
+      topRestartBtn.classList.remove("hidden");
+      topRestartBtn.classList.add("inline-flex");
+
+      liveScoreText.textContent = "0";
+      renderQuestion();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    /**
+     * Volta para a tela inicial a partir do botão superior.
+     */
+    function confirmOrRestartFromTop() {
+      prepareNextParticipant();
+    }
+
+    /**
+     * Calcula a nota de 0,0 a 10,0, salva o resultado, gera mensagem personalizada e monta a revisão.
+     */
+    function showFinalResult() {
+      quizScreen.classList.add("hidden");
+      resultScreen.classList.remove("hidden");
+      reviewSection.classList.remove("hidden");
+      toggleReviewLabel.textContent = "Ocultar Gabarito";
+
+      const total = QUIZ_QUESTIONS.length;
+      const rawGrade = (scoreHits / total) * 10;
+      const formattedGrade = rawGrade.toFixed(1);
+      const wrongCount = total - scoreHits;
+      const percent = Math.round((scoreHits / total) * 100);
+      const nowFormatted = new Date().toLocaleString("pt-BR");
+
+      const recordEntry = {
+        name: participantData.name || "Participante",
+        profile: participantData.profile || "Visitante",
+        grade: formattedGrade,
+        hits: scoreHits,
+        totalQuestions: total,
+        timestamp: nowFormatted
+      };
+
+      const savedOk = saveResultToLocalStorage(recordEntry);
+      sendOptionalWebhook(recordEntry);
+
+      resultParticipantBadge.textContent = `${recordEntry.name} • ${recordEntry.profile}`;
+      storageConfirmationText.textContent = savedOk
+        ? `✓ Resultado de ${recordEntry.name} salvo com sucesso neste navegador (${nowFormatted}).`
+        : "⚠ Não foi possível acessar o armazenamento local deste navegador.";
+
+      finalGradeText.innerHTML = `${formattedGrade}<span class="text-lg font-semibold text-sky-300">/10</span>`;
+      finalHitsText.textContent = `${scoreHits} de ${total} acertos`;
+      summaryCorrectCount.textContent = String(scoreHits);
+      summaryWrongCount.textContent = String(wrongCount);
+      summaryPercentCount.textContent = `${percent}%`;
+
+      let profileNote = "Muito obrigado por visitar nosso estande na Feira das Profissões!";
+      if (recordEntry.profile === "Aluno da Escola Estadual Professora Ana Teles") {
+        profileNote = "Orgulho da Escola Estadual Professora Ana Teles!";
+      } else if (recordEntry.profile === "Professor") {
+        profileNote = "É uma honra receber um(a) Professor(a) em nosso estande na Feira das Profissões!";
+      }
+
+      // Mensagem personalizada conforme faixa de pontuação (0 a 10)
+      if (rawGrade >= 9.0) {
+        congratsTitle.textContent = `Parabéns, ${recordEntry.name}! Mandou muito bem na conexão TI + SST!`;
+        congratsMessage.textContent = `${profileNote} Você demonstrou domínio excelente sobre tecnologia, segurança da informação e prevenção de acidentes.`;
+      } else if (rawGrade >= 7.0) {
+        congratsTitle.textContent = `Parabéns, ${recordEntry.name}! Ótimo desempenho no desafio!`;
+        congratsMessage.textContent = `${profileNote} Você já conectou vários conceitos essenciais entre informática e Segurança do Trabalho. Veja o gabarito abaixo para conferir os detalhes.`;
+      } else if (rawGrade >= 5.0) {
+        congratsTitle.textContent = `Bom trabalho, ${recordEntry.name}! Você está no caminho certo!`;
+        congratsMessage.textContent = `${profileNote} Você acertou boas questões e, com as explicações abaixo, vai dominar ainda mais a união entre TI e SST.`;
+      } else {
+        congratsTitle.textContent = `Parabéns por participar, ${recordEntry.name}!`;
+        congratsMessage.textContent = `${profileNote} A Feira das Profissões é o espaço ideal para aprender! Confira as explicações abaixo e jogue novamente para evoluir sua nota.`;
+      }
+
+      renderReviewList();
+      if (staffUnlocked) {
+        renderStaffRecordsTable();
+      }
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    /**
+     * Lê todos os registros salvos no localStorage com segurança.
+     * @returns {Array<Object>}
+     */
+    function getStoredRecords() {
+      try {
+        const raw = window.localStorage.getItem(STORAGE_KEY);
+        if (!raw) return [];
+        const parsed = JSON.parse(raw);
+        return Array.isArray(parsed) ? parsed : [];
+      } catch (err) {
+        return [];
+      }
+    }
+
+    /**
+     * Salva um novo resultado de participação no localStorage.
+     * @param {Object} entry
+     * @returns {boolean}
+     */
+    function saveResultToLocalStorage(entry) {
+      try {
+        const current = getStoredRecords();
+        current.unshift(entry);
+        window.localStorage.setItem(STORAGE_KEY, JSON.stringify(current));
+        return true;
+      } catch (err) {
+        return false;
+      }
+    }
+
+    /**
+     * Envia opcionalmente o resultado para Webhook / Google Apps Script se configurado.
+     * @param {Object} entry
+     */
+    function sendOptionalWebhook(entry) {
+      if (!OPTIONAL_WEBHOOK_URL) return;
+      try {
+        fetch(OPTIONAL_WEBHOOK_URL, {
+          method: "POST",
+          mode: "no-cors",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(entry)
+        }).catch(() => {});
+      } catch (err) {
+        // Falha silenciosa para não interromper o jogo no estande
+      }
+    }
+
+    /**
+     * Abre o painel discreto da equipe do estande.
+     */
+    function openStaffModal() {
+      staffModal.classList.remove("hidden");
+      clearConfirmBar.classList.add("hidden");
+      if (staffUnlocked) {
+        staffPinGate.classList.add("hidden");
+        staffRecordsContent.classList.remove("hidden");
+        renderStaffRecordsTable();
+      } else {
+        staffPinGate.classList.remove("hidden");
+        staffRecordsContent.classList.add("hidden");
+        staffPinError.classList.add("hidden");
+        staffPinInput.value = "";
+        staffPinInput.focus();
+      }
+      staffModal.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    }
+
+    /**
+     * Fecha o painel da equipe do estande.
+     */
+    function closeStaffModal() {
+      staffModal.classList.add("hidden");
+      clearConfirmBar.classList.add("hidden");
+    }
+
+    /**
+     * Valida o PIN simples da equipe para exibir os registros salvos.
+     */
+    function unlockStaffPanel() {
+      const entered = staffPinInput.value.trim();
+      if (entered === STAFF_ACCESS_PIN) {
+        staffUnlocked = true;
+        staffPinError.classList.add("hidden");
+        staffPinGate.classList.add("hidden");
+        staffRecordsContent.classList.remove("hidden");
+        renderStaffRecordsTable();
+      } else {
+        staffPinError.classList.remove("hidden");
+        staffPinInput.focus();
+      }
+    }
+
+    /**
+     * Renderiza a tabela de participações salvas no painel da equipe.
+     */
+    function renderStaffRecordsTable() {
+      const records = getStoredRecords();
+      recordsTotalCount.textContent = String(records.length);
+      recordsTableBody.innerHTML = "";
+
+      if (records.length === 0) {
+        recordsTableBody.innerHTML = `
+          <tr>
+            <td colspan="5" class="py-6 px-4 text-center text-slate-400 text-xs sm:text-sm">
+              Nenhuma participação registrada neste navegador ainda.
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      records.forEach((rec) => {
+        const tr = document.createElement("tr");
+        const isStudent = rec.profile.startsWith("Aluno");
+        const isTeacher = rec.profile === "Professor";
+        const badgeClass = isStudent
+          ? "bg-sky-500/20 text-sky-300 border-sky-400/30"
+          : isTeacher
+            ? "bg-emerald-500/20 text-emerald-300 border-emerald-400/30"
+            : "bg-slate-700/70 text-slate-200 border-slate-600";
+
+        tr.innerHTML = `
+          <td class="py-2.5 px-3 font-semibold text-white">${escapeHtml(rec.name)}</td>
+          <td class="py-2.5 px-3">
+            <span class="inline-block text-xs font-semibold px-2 py-0.5 rounded-full border ${badgeClass}">
+              ${escapeHtml(rec.profile)}
+            </span>
+          </td>
+          <td class="py-2.5 px-3 font-extrabold text-sky-300">${escapeHtml(rec.grade)}</td>
+          <td class="py-2.5 px-3 text-slate-200">${escapeHtml(String(rec.hits))}/${escapeHtml(String(rec.totalQuestions || 15))}</td>
+          <td class="py-2.5 px-3 text-xs text-slate-400 whitespace-nowrap">${escapeHtml(rec.timestamp)}</td>
+        `;
+        recordsTableBody.appendChild(tr);
+      });
+    }
+
+    /**
+     * Exporta os registros salvos para arquivo CSV compatível com Excel e Google Sheets.
+     */
+    function exportRecordsToCsv() {
+      const records = getStoredRecords();
+      if (records.length === 0) return;
+
+      const headers = ["Nome / Apelido", "Perfil", "Nota (0 a 10)", "Acertos", "Total de Perguntas", "Data/Hora"];
+      const csvRows = [
+        headers.map((h) => `"${h.replace(/"/g, '""')}"`).join(";"),
+        ...records.map((r) => [
+          r.name,
+          r.profile,
+          String(r.grade).replace(".", ","),
+          r.hits,
+          r.totalQuestions || 15,
+          r.timestamp
+        ].map((val) => `"${String(val).replace(/"/g, '""')}"`).join(";"))
+      ];
+
+      const csvContent = "\uFEFF" + csvRows.join("\n");
+      const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `resultados_tech_sst_quiz_${new Date().toISOString().slice(0, 10)}.csv`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    }
+
+    /**
+     * Exibe barra de confirmação discreta para limpar os registros.
+     */
+    function handleClearRecords() {
+      clearConfirmBar.classList.remove("hidden");
+    }
+
+    /**
+     * Cancela a limpeza de registros.
+     */
+    function cancelClearRecords() {
+      clearConfirmBar.classList.add("hidden");
+    }
+
+    /**
+     * Remove todos os registros armazenados no localStorage.
+     */
+    function confirmClearRecords() {
+      try {
+        window.localStorage.removeItem(STORAGE_KEY);
+      } catch (err) {
+        // Ignora erro de armazenamento
+      }
+      clearConfirmBar.classList.add("hidden");
+      renderStaffRecordsTable();
+    }
+
+    /**
+     * Renderiza a pergunta atual e suas 4 alternativas (A, B, C, D).
+     */
+    function renderQuestion() {
+      const q = QUIZ_QUESTIONS[currentQuestionIndex];
+      const total = QUIZ_QUESTIONS.length;
+      const stepNumber = currentQuestionIndex + 1;
+
+      answeredCurrent = false;
+
+      // Reanima o cartão da pergunta
+      questionCard.classList.remove("animate-enter");
+      void questionCard.offsetWidth;
+      questionCard.classList.add("animate-enter");
+
+      // Atualiza barra de progresso e contadores
+      questionCounter.textContent = `Pergunta ${stepNumber} de ${total}`;
+      topicBadge.textContent = q.topic;
+      mobileTopicBadge.textContent = q.topic;
+      questionNumberPill.textContent = `Questão #${String(stepNumber).padStart(2, "0")}`;
+      liveScoreText.textContent = String(scoreHits);
+
+      const percentProgress = (stepNumber / total) * 100;
+      progressBarFill.style.width = `${percentProgress}%`;
+      progressBarContainer.setAttribute("aria-valuenow", String(stepNumber));
+
+      // Define texto da pergunta
+      questionText.textContent = q.question;
+
+      // Esconde feedback e desabilita avançar até responder
+      feedbackBox.classList.add("hidden");
+      feedbackBox.className = "hidden mt-5 p-4 sm:p-5 rounded-xl border-2 transition-all";
+      nextQuestionBtn.disabled = true;
+      nextBtnLabel.textContent = stepNumber === total ? "Ver Resultado Final" : "Próxima Pergunta";
+
+      // Cria botões das 4 alternativas
+      optionsContainer.innerHTML = "";
+      q.options.forEach((optText, idx) => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "option-btn";
+        btn.dataset.index = String(idx);
+        btn.setAttribute("aria-label", `Alternativa ${LETTERS[idx]}: ${optText}`);
+
+        const letterSpan = document.createElement("span");
+        letterSpan.className = "option-letter";
+        letterSpan.textContent = LETTERS[idx];
+
+        const textSpan = document.createElement("span");
+        textSpan.className = "text-sm sm:text-base font-medium leading-snug pt-0.5";
+        textSpan.textContent = optText;
+
+        btn.appendChild(letterSpan);
+        btn.appendChild(textSpan);
+
+        btn.addEventListener("click", () => handleSelectOption(idx));
+        optionsContainer.appendChild(btn);
+      });
+    }
+
+    /**
+     * Processa a escolha do usuário, destaca correta/incorreta e exibe explicação.
+     * @param {number} selectedIndex
+     */
+    function handleSelectOption(selectedIndex) {
+      if (answeredCurrent) return;
+      answeredCurrent = true;
+
+      const q = QUIZ_QUESTIONS[currentQuestionIndex];
+      const isCorrect = selectedIndex === q.correctIndex;
+
+      if (isCorrect) {
+        scoreHits += 1;
+        liveScoreText.textContent = String(scoreHits);
+      }
+
+      userAnswers.push({
+        questionId: q.id,
+        selectedIndex,
+        isCorrect
+      });
+
+      // Atualiza visual de todas as alternativas
+      const optionButtons = optionsContainer.querySelectorAll(".option-btn");
+      optionButtons.forEach((btn) => {
+        const idx = Number(btn.dataset.index);
+        btn.disabled = true;
+
+        if (idx === q.correctIndex) {
+          btn.classList.add("state-correct");
+        } else if (idx === selectedIndex && !isCorrect) {
+          btn.classList.add("state-wrong");
+        } else {
+          btn.classList.add("state-dimmed");
+        }
+      });
+
+      // Exibe caixa de feedback imediato com explicação
+      feedbackBox.classList.remove("hidden");
+
+      if (isCorrect) {
+        feedbackBox.classList.add("bg-emerald-50", "border-emerald-500", "text-emerald-950");
+        feedbackIcon.innerHTML = `
+          <div class="w-7 h-7 rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+          </div>
+        `;
+        feedbackTitle.textContent = "Resposta Correta!";
+        feedbackTitle.className = "font-extrabold text-base sm:text-lg leading-snug text-emerald-800";
+        feedbackExplanation.className = "mt-1.5 text-sm sm:text-base leading-relaxed text-emerald-950";
+      } else {
+        feedbackBox.classList.add("bg-rose-50", "border-rose-500", "text-rose-950");
+        feedbackIcon.innerHTML = `
+          <div class="w-7 h-7 rounded-full bg-rose-600 text-white flex items-center justify-center font-bold">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </div>
+        `;
+        feedbackTitle.textContent = `Não foi dessa vez! Alternativa correta: ${LETTERS[q.correctIndex]}`;
+        feedbackTitle.className = "font-extrabold text-base sm:text-lg leading-snug text-rose-800";
+        feedbackExplanation.className = "mt-1.5 text-sm sm:text-base leading-relaxed text-rose-950";
+      }
+
+      feedbackExplanation.textContent = q.explanation;
+      nextQuestionBtn.disabled = false;
+      nextQuestionBtn.focus();
+    }
+
+    /**
+     * Avança para a próxima pergunta ou exibe a tela de resultado final.
+     */
+    function handleNextQuestion() {
+      if (!answeredCurrent) return;
+
+      if (currentQuestionIndex + 1 < QUIZ_QUESTIONS.length) {
+        currentQuestionIndex += 1;
+        renderQuestion();
+        questionCard.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      } else {
+        showFinalResult();
+      }
+    }
+
+    /**
+     * Renderiza o resumo das 15 perguntas com resposta do usuário, gabarito e explicação.
+     */
+    function renderReviewList() {
+      reviewList.innerHTML = "";
+
+      QUIZ_QUESTIONS.forEach((q, idx) => {
+        const answerRecord = userAnswers[idx] || { selectedIndex: -1, isCorrect: false };
+        const isCorrect = answerRecord.isCorrect;
+        const selectedLetter = answerRecord.selectedIndex >= 0 ? LETTERS[answerRecord.selectedIndex] : "-";
+        const selectedText = answerRecord.selectedIndex >= 0 ? q.options[answerRecord.selectedIndex] : "Não respondida";
+        const correctLetter = LETTERS[q.correctIndex];
+        const correctText = q.options[q.correctIndex];
+
+        const item = document.createElement("article");
+        item.className = `p-4 rounded-xl border ${
+          isCorrect
+            ? "bg-slate-900/95 border-emerald-500/40"
+            : "bg-slate-900/95 border-rose-500/40"
+        }`;
+
+        const badgeHtml = isCorrect
+          ? `<span class="text-xs font-bold px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/30">Acertou</span>`
+          : `<span class="text-xs font-bold px-2.5 py-0.5 rounded-full bg-rose-500/20 text-rose-300 border border-rose-400/30">Errou</span>`;
+
+        item.innerHTML = `
+          <div class="flex items-center justify-between gap-2 mb-2">
+            <span class="text-xs font-bold uppercase tracking-wider text-sky-400">
+              Questão ${String(idx + 1).padStart(2, "0")} • ${escapeHtml(q.topic)}
+            </span>
+            ${badgeHtml}
+          </div>
+          <p class="text-sm sm:text-base font-bold text-white leading-snug mb-2.5">
+            ${escapeHtml(q.question)}
+          </p>
+          <div class="text-xs sm:text-sm space-y-1 mb-2.5">
+            <p class="${isCorrect ? "text-emerald-300" : "text-rose-300"}">
+              <strong>Sua resposta (${selectedLetter}):</strong> ${escapeHtml(selectedText)}
+            </p>
+            ${
+              !isCorrect
+                ? `<p class="text-emerald-300"><strong>Correta (${correctLetter}):</strong> ${escapeHtml(correctText)}</p>`
+                : ""
+            }
+          </div>
+          <p class="text-xs sm:text-sm text-slate-300 leading-relaxed bg-slate-950/70 p-3 rounded-lg border border-slate-800">
+            <strong class="text-sky-300">Explicação:</strong> ${escapeHtml(q.explanation)}
+          </p>
+        `;
+
+        reviewList.appendChild(item);
+      });
+    }
+
+    /**
+     * Alterna a visibilidade da seção de revisão/gabarito na tela de resultados.
+     */
+    function toggleReviewSection() {
+      const isHidden = reviewSection.classList.contains("hidden");
+      if (isHidden) {
+        reviewSection.classList.remove("hidden");
+        toggleReviewLabel.textContent = "Ocultar Gabarito";
+        reviewSection.scrollIntoView({ behavior: "smooth", block: "start" });
+      } else {
+        reviewSection.classList.add("hidden");
+        toggleReviewLabel.textContent = "Ver Gabarito e Explicações";
+      }
+    }
+
+    /**
+     * Escapa caracteres especiais para evitar injeção de HTML em textos dinâmicos.
+     * @param {string} str
+     * @returns {string}
+     */
+    function escapeHtml(str) {
+      return String(str)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    }
+  </script>
+</body>
+</html>
